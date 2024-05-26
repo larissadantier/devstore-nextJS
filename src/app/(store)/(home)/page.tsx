@@ -1,3 +1,4 @@
+import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -15,11 +16,15 @@ async function getFeaturedProducts(): Promise<IProduct[]> {
   return products
 }
 
+export const metadata: Metadata = {
+  title: 'Home',
+}
+
 export default async function Home() {
   const [highlightedProduct, ...otherProducts] = await getFeaturedProducts()
 
   return (
-    <div className="grid-rows-6 grid max-h-[860px] grid-cols-9 gap-6">
+    <div className="grid max-h-[860px] grid-cols-9 grid-rows-6 gap-6">
       <Link
         href={`/product/${highlightedProduct.slug}`}
         className="group relative col-span-6 row-span-6 flex items-start justify-center overflow-hidden rounded-lg bg-zinc-900"
@@ -31,7 +36,7 @@ export default async function Home() {
           height={920}
           quality={100}
           priority={false}
-          alt=""
+          alt={highlightedProduct.image}
         />
 
         <div className="absolute bottom-28 right-28 flex h-12 max-w-[240px] items-center gap-2 rounded-full border-2 border-zinc-500 bg-black/60 p-1 pl-5">
@@ -60,7 +65,7 @@ export default async function Home() {
             width={345}
             height={345}
             quality={100}
-            alt=""
+            alt={item.image}
           />
 
           <div className="absolute bottom-10 right-10 flex h-12 max-w-[240px] items-center gap-2 rounded-full border-2 border-zinc-500 bg-black/60 p-1 pl-5">

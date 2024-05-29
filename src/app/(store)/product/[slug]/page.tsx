@@ -1,7 +1,9 @@
 import { Metadata } from 'next'
+import Image from 'next/image'
+
 import { api } from '@/data/api'
 import { IProduct } from '@/data/types/products'
-import Image from 'next/image'
+import AddTorCardButton from '@/components/add-to-cart-button'
 
 interface ProductPageProps {
   params: {
@@ -117,12 +119,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </div>
 
-        <button
-          type="button"
-          className="mt-8 flex h-12 items-center justify-center rounded-full bg-emerald-600 font-semibold text-white"
-        >
-          Adicionar ao carrinho
-        </button>
+        <AddTorCardButton productId={product.id} />
       </div>
     </div>
   )

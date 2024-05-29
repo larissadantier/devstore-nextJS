@@ -1,4 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from 'next/server'
+import colors from 'tailwindcss/colors'
+
+import { api } from '@/data/api'
+import { IProduct } from '@/data/types/products'
+import { env } from '@/env'
 
 // Route segment config
 export const runtime = 'edge'
@@ -12,37 +18,44 @@ export const size = {
 
 export const contentType = 'image/png'
 
-export default async function Image() {
-  const interSemiBold = fetch(
-    new URL('./Inter-SemiBold.ttf', import.meta.url),
-  ).then((res) => res.arrayBuffer())
+async function getProduct(slug: string): Promise<IProduct> {
+  const response = await api(`/products/${slug}`, {
+    next: {
+      revalidate: 60 * 60,
+    },
+  })
+
+  const products = await response.json()
+
+  return products
+}
+
+export default async function OgImage({
+  params,
+}: {
+  params: { slug: string }
+}) {
+  const product = await getProduct(params.slug)
+
+  const productImageURL = new URL(product.image, env.API_URL).toString()
 
   return new ImageResponse(
     (
       <div
         style={{
-          fontSize: 128,
-          background: 'white',
+          background: colors.zinc[950],
           width: '100%',
           height: '100%',
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          flexDirection: 'column',
         }}
       >
-        About Acme
+        <img
+          src={productImageURL}
+          alt={product.description}
+          style={{ width: '100%' }}
+        />
       </div>
     ),
-    {
-      ...size,
-      fonts: [
-        {
-          name: 'Inter',
-          data: await interSemiBold,
-          style: 'normal',
-          weight: 400,
-        },
-      ],
-    },
   )
 }
